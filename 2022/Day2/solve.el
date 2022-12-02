@@ -4,7 +4,10 @@
       (list-utils-safe-equal m '(?C ?X))))
 
 (defun score (m)
-  (+ (if (win? m) 6 (if (char-equal (+ (-first-item m) 23) (-last-item m)) 3 0))
+  (+ (cond
+      ((win? m) 6)
+      ((char-equal (+ (-first-item m) 23) (-last-item m)) 3)
+      (t 0))
      (- (-last-item m) 87)))
 
 (defun solve ()
