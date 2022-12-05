@@ -1,7 +1,7 @@
 (defun read-file ()
   (interactive)
   (->> (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n")
-       (-filter (lambda (x) (not (string-empty-p x))))))
+       (--filter (not (string-empty-p it)))))
 
 (defun solve ()
   (interactive)
