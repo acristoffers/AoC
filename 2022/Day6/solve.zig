@@ -4,23 +4,16 @@ const contents = @embedFile("input.txt");
 
 fn searchInWindow(n: usize) !usize {
     var i: usize = 0;
-    while (i < contents.len) : (i += 1) {
-        var found = false;
-
+    blk: while (i < contents.len) : (i += 1) {
         var j: usize = i;
         while (j < i + n) : (j += 1) {
             const c = contents[j .. j + 1];
             if (std.mem.containsAtLeast(u8, contents[i .. i + n], 2, c)) {
-                found = true;
-                break;
+                continue :blk;
             }
         }
-
-        if (!found) {
-            break;
-        }
+        break;
     }
-
     return i + n;
 }
 
