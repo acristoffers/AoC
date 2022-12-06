@@ -24,10 +24,11 @@
        (?X 0)
        (?Y 3)
        (?Z 6))
-     (nth (mod (+ (cl-case (-last-item m)
+     (+ 1 (mod (+ (cl-case (-last-item m)
                     (?X -1)
                     (?Y 0)
-                    (?Z 1)) (- (-first-item m) ?A)) 3) '(1 2 3))))
+                    (?Z 1))
+                  (- (-first-item m) ?A)) 3))))
 
 (defun solve2 ()
   (interactive)
