@@ -13,10 +13,8 @@
       ('L (append head (list (cons (1- (car last-head)) (cdr last-head))) nil)))))
 
 (defun distance (u v)
-  (round (expt (sqrt (+ (expt (- (car u)
-                                 (car v)) 2)
-                        (expt (- (cdr u)
-                                 (cdr v)) 2))) 2)))
+  (round (+ (expt (- (car u) (car v)) 2)
+            (expt (- (cdr u) (cdr v)) 2))))
 
 (defun sign (x)
   (cond ((eq x 0) 0)
