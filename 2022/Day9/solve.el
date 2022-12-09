@@ -5,12 +5,11 @@
        (--filter (not (string-empty-p it)))))
 
 (defun move-head (head direction)
-  (let ((last-head (-last-item head)))
-    (cl-case direction
-      ('U (append head (list (cons (car last-head) (1+ (cdr last-head)))) nil))
-      ('D (append head (list (cons (car last-head) (1- (cdr last-head)))) nil))
-      ('R (append head (list (cons (1+ (car last-head)) (cdr last-head))) nil))
-      ('L (append head (list (cons (1- (car last-head)) (cdr last-head))) nil)))))
+  (cl-case direction
+    ('U (cons (car head) (1+ (cdr head))))
+    ('D (cons (car head) (1- (cdr head))))
+    ('R (cons (1+ (car head)) (cdr head)))
+    ('L (cons (1- (car head)) (cdr head)))))
 
 (defun distance (u v)
   (round (+ (expt (- (car u) (car v)) 2)
@@ -22,14 +21,10 @@
         ((> x 0) 1)))
 
 (defun move-tail (head tail)
-  (let ((lh (-last-item head))
-        (lt (-last-item tail)))
-    (append
-     tail
-     (if (>= 2 (distance lh lt))
-         (list (-last-item tail))
-       (list (cons (+ (car lt) (sign (- (car lh) (car lt)))) (+ (cdr lt) (sign (- (cdr lh) (cdr lt)))))))
-     nil)))
+  (if (<= (distance head tail) 2)
+      tail
+    (cons (+ (car tail) (sign (- (car head) (car tail))))
+          (+ (cdr tail) (sign (- (cdr head) (cdr tail)))))))
 
 (defmacro --mapc (form list)
   (declare (debug (def-form form)))
@@ -37,8 +32,9 @@
 
 (defun solve ()
   (interactive)
-  (let ((head (list (cons 0 0)))
-        (tail (list (cons 0 0)))
+  (let ((head (cons 0 0))
+        (tail (cons 0 0))
+        (dict (list))
         (-compare-fn #'equal))
     (->> (read-file)
          (-map #'split-string)
@@ -47,12 +43,14 @@
                        (n (cadr it)))
                    (--dotimes n
                      (setq head (move-head head dir))
-                     (setq tail (move-tail head tail))))))
-    (message "Solution 1: %s" (length (-uniq tail)))))
+                     (setq tail (move-tail head tail))
+                     (push tail dict)))))
+    (message "Solution 1: %s" (length (-uniq dict)))))
 
 (defun solve2 ()
   (interactive)
-  (let ((snake (--map (list (cons 0 0)) (number-sequence 0 9)))
+  (let ((snake (--map (cons 0 0) (number-sequence 0 9)))
+        (dict (list))
         (-compare-fn #'equal))
     (->> (read-file)
          (-map #'split-string)
@@ -65,5 +63,6 @@
                            (setf (car snake)
                                  (move-head it dir))
                          (setf (elt snake it-index)
-                               (move-tail (elt snake (1- it-index)) it))))))))
-    (message "Solution 2: %s" (length (-uniq (-last-item snake))))))
+                               (move-tail (elt snake (1- it-index)) it)))
+                       (push (-last-item snake) dict))))))
+    (message "Solution 2: %s" (length (-uniq dict)))))
