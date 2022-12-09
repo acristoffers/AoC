@@ -11,20 +11,12 @@
     ('R (cons (1+ (car head)) (cdr head)))
     ('L (cons (1- (car head)) (cdr head)))))
 
-(defun distance (u v)
-  (round (+ (expt (- (car u) (car v)) 2)
-            (expt (- (cdr u) (cdr v)) 2))))
-
-(defun sign (x)
-  (cond ((eq x 0) 0)
-        ((< x 0) -1)
-        ((> x 0) 1)))
-
 (defun move-tail (head tail)
-  (if (<= (distance head tail) 2)
+  (if (<= (+ (expt (- (car head) (car tail)) 2)
+             (expt (- (cdr head) (cdr tail)) 2)) 2)
       tail
-    (cons (+ (car tail) (sign (- (car head) (car tail))))
-          (+ (cdr tail) (sign (- (cdr head) (cdr tail)))))))
+    (cons (+ (car tail) (cl-signum (- (car head) (car tail))))
+          (+ (cdr tail) (cl-signum (- (cdr head) (cdr tail)))))))
 
 (defmacro --mapc (form list)
   (declare (debug (def-form form)))
