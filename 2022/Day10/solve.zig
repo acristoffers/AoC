@@ -15,7 +15,7 @@ pub fn main() !void {
                 acc += x * @intCast(isize, i);
             }
 
-            if (try std.math.absInt(x - @intCast(isize, try std.math.mod(usize, i - 1, 40))) <= 1) {
+            if (try std.math.absInt(x - @intCast(isize, @mod(i - 1, 40))) <= 1) {
                 vec[i - 1] = '#';
             } else {
                 vec[i - 1] = ' ';

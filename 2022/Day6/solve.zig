@@ -2,7 +2,7 @@ const std = @import("std");
 
 const contents = @embedFile("input.txt");
 
-fn searchInWindow(n: usize) !usize {
+fn searchInWindow(n: usize) usize {
     var i: usize = 0;
     blk: while (i < contents.len) : (i += 1) {
         var j: usize = i;
@@ -18,8 +18,9 @@ fn searchInWindow(n: usize) !usize {
 }
 
 pub fn main() !void {
-    const r1 = try searchInWindow(4);
-    const r2 = try searchInWindow(14);
+    const r1 = searchInWindow(4);
+    const r2 = searchInWindow(14);
+
     std.log.info("Solution 1: {d}", .{r1});
     std.log.info("Solution 2: {d}", .{r2});
 }
