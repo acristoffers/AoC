@@ -16,12 +16,12 @@ const Point = struct {
 };
 
 fn parse(allocator: std.mem.Allocator) !Vec(Vec(Point)) {
-    var map = Vec(Vec(Point)).init(allocator);
+    var map = try Vec(Vec(Point)).initCapacity(allocator, 40);
 
     var lines = std.mem.tokenize(u8, contents, "\n");
     var i: usize = 0;
     while (lines.next()) |line| {
-        var lineVec = Vec(Point).init(allocator);
+        var lineVec = try Vec(Point).initCapacity(allocator, 500);
         for (line) |c, j| {
             const point = Point{
                 .height = c,
@@ -45,8 +45,8 @@ fn aStar(allocator: std.mem.Allocator, forceStart: ?Pair) !usize {
     defer map.deinit();
     defer for (map.items) |item| item.deinit();
 
-    var open = Vec(Pair).init(allocator);
-    var closed = Vec(Pair).init(allocator);
+    var open = try Vec(Pair).initCapacity(allocator, 1000);
+    var closed = try Vec(Pair).initCapacity(allocator, 1000);
     var current = Pair{ 0, 0 };
     var start = Pair{ 0, 0 };
     var target = Pair{ 0, 0 };

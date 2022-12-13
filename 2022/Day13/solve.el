@@ -5,7 +5,6 @@
        (--filter (not (string-empty-p it)))))
 
 (defun compare (it other)
-  (message "Comparing %s %s" it other)
   (cond
    ((and (numberp it) (numberp other)) (cond ((< it other) -1)
                                              ((eq it other) 0)
