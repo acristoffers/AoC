@@ -1,3 +1,6 @@
+(defun read-file ()
+  (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n" t " "))
+
 (defun win? (m)
   (or (list-utils-safe-equal m '(?A ?Y))
       (list-utils-safe-equal m '(?B ?Z))
@@ -12,12 +15,11 @@
 
 (defun solve ()
   (interactive)
-  (->> (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n")
-       (--filter (not (string-empty-p it)))
+  (->> (read-file)
        (--map (-map #'string-to-char (split-string it " ")))
        (-map #'score)
        (-sum)
-       (message "Answer: %d")))
+       (message "Solution 1: %d")))
 
 (defun score2 (m)
   (+ (cl-case (-last-item m)
@@ -32,9 +34,8 @@
 
 (defun solve2 ()
   (interactive)
-  (->> (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n")
-       (--filter (not (string-empty-p it)))
+  (->> (read-file)
        (--map (-map #'string-to-char (split-string it " ")))
        (-map #'score2)
        (-sum)
-       (message "Answer: %d")))
+       (message "Solution 2: %d")))

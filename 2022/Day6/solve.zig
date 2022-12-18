@@ -1,5 +1,4 @@
 const std = @import("std");
-
 const contents = @embedFile("input.txt");
 
 fn searchInWindow(n: usize) usize {
@@ -21,6 +20,6 @@ pub fn main() !void {
     const r1 = searchInWindow(4);
     const r2 = searchInWindow(14);
 
-    std.log.info("Solution 1: {d}", .{r1});
-    std.log.info("Solution 2: {d}", .{r2});
+    std.debug.print("Solution 1: {d}\n", .{r1});
+    std.debug.print("Solution 2: {d}\n", .{r2});
 }

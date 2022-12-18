@@ -1,9 +1,7 @@
 const std = @import("std");
-
 const contents = @embedFile("input.txt");
 
 fn solution1(allocator: std.mem.Allocator) !void {
-    var lines = std.mem.split(u8, contents, "\n");
     var points: usize = 0;
 
     var bs1 = try std.DynamicBitSet.initEmpty(allocator, 52);
@@ -12,9 +10,8 @@ fn solution1(allocator: std.mem.Allocator) !void {
     defer bs1.deinit();
     defer bs2.deinit();
 
+    var lines = std.mem.tokenize(u8, contents, "\n");
     while (lines.next()) |line| {
-        if (line.len == 0) continue;
-
         const x = line[0 .. line.len / 2];
         const y = line[line.len / 2 ..];
 
@@ -28,11 +25,10 @@ fn solution1(allocator: std.mem.Allocator) !void {
         points += bs1.findFirstSet().? + 1;
     }
 
-    std.log.info("Solution 1 is {}", .{points});
+    std.debug.print("Solution 1: {}\n", .{points});
 }
 
 fn solution2(allocator: std.mem.Allocator) !void {
-    var lines = std.mem.split(u8, contents, "\n");
     var points: usize = 0;
 
     var bs1 = try std.DynamicBitSet.initEmpty(allocator, 52);
@@ -43,9 +39,8 @@ fn solution2(allocator: std.mem.Allocator) !void {
     defer bs2.deinit();
     defer bs3.deinit();
 
+    var lines = std.mem.tokenize(u8, contents, "\n");
     while (lines.next()) |line1| {
-        if (line1.len == 0) continue;
-
         const line2 = lines.next().?;
         const line3 = lines.next().?;
 
@@ -62,7 +57,7 @@ fn solution2(allocator: std.mem.Allocator) !void {
         points += bs1.findFirstSet().? + 1;
     }
 
-    std.log.info("Solution 2 is {}", .{points});
+    std.debug.print("Solution 2: {}\n", .{points});
 }
 
 pub fn main() !void {

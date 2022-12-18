@@ -1,7 +1,5 @@
 const std = @import("std");
-
 const contents = @embedFile("input.txt");
-
 const NodeList = std.ArrayList(Node);
 const Node = struct {
     name: []const u8,
@@ -118,6 +116,6 @@ pub fn main() !void {
     }
 
     root.updateSize();
-    std.log.info("Solution 1: {d}", .{root.sumOfLessThan100000()});
-    std.log.info("Solution 2: {d}", .{root.smallestLessThan(root.size)});
+    std.debug.print("Solution 1: {d}\n", .{root.sumOfLessThan100000()});
+    std.debug.print("Solution 2: {d}\n", .{root.smallestLessThan(root.size)});
 }

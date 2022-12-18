@@ -1,7 +1,5 @@
 const std = @import("std");
-
 const contents = @embedFile("input.txt");
-
 const Stacks = [10]std.ArrayList(u8);
 
 fn parseCranes(allocator: std.mem.Allocator, input: []const u8) !Stacks {
@@ -10,9 +8,9 @@ fn parseCranes(allocator: std.mem.Allocator, input: []const u8) !Stacks {
         v.* = std.ArrayList(u8).init(allocator);
     }
 
-    var lines = std.mem.split(u8, input, "\n");
+    var lines = std.mem.tokenize(u8, input, "\n");
     while (lines.next()) |line| {
-        if (line.len == 0 or line[1] == '1') {
+        if (line[1] == '1') {
             continue;
         }
 
@@ -30,13 +28,9 @@ fn parseCranes(allocator: std.mem.Allocator, input: []const u8) !Stacks {
 }
 
 fn move(stacks: *Stacks, input: []const u8) !void {
-    var lines = std.mem.split(u8, input, "\n");
+    var lines = std.mem.tokenize(u8, input, "\n");
     while (lines.next()) |line| {
-        if (line.len == 0) {
-            continue;
-        }
-
-        var tokens = std.mem.split(u8, line, " ");
+        var tokens = std.mem.tokenize(u8, line, " ");
         _ = tokens.next();
         const n = try std.fmt.parseInt(usize, tokens.next().?, 10);
         _ = tokens.next();
@@ -52,13 +46,9 @@ fn move(stacks: *Stacks, input: []const u8) !void {
 }
 
 fn move9001(stacks: *Stacks, input: []const u8) !void {
-    var lines = std.mem.split(u8, input, "\n");
+    var lines = std.mem.tokenize(u8, input, "\n");
     while (lines.next()) |line| {
-        if (line.len == 0) {
-            continue;
-        }
-
-        var tokens = std.mem.split(u8, line, " ");
+        var tokens = std.mem.tokenize(u8, line, " ");
         _ = tokens.next();
         const n = try std.fmt.parseInt(usize, tokens.next().?, 10);
         _ = tokens.next();
@@ -100,7 +90,7 @@ fn main9000() !void {
         try top.append(s.items[s.items.len - 1]);
     }
 
-    std.log.info("Solution 1 is {s}", .{top.items});
+    std.debug.print("Solution 1: {s}\n", .{top.items});
 }
 
 fn main9001() !void {
@@ -128,7 +118,7 @@ fn main9001() !void {
         try top.append(s.items[s.items.len - 1]);
     }
 
-    std.log.info("Solution 2 is {s}", .{top.items});
+    std.debug.print("Solution 2: {s}\n", .{top.items});
 }
 
 pub fn main() !void {

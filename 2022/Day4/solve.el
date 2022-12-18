@@ -1,7 +1,5 @@
 (defun read-file ()
-  (interactive)
-  (->> (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n")
-       (-filter (lambda (x) (not (string-empty-p x))))))
+  (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n" t " "))
 
 (defun solve ()
   (interactive)
@@ -11,7 +9,7 @@
        (--filter (or (and (<= (nth 0 it) (nth 2 it)) (>= (nth 1 it) (nth 3 it)))
                      (and (>= (nth 0 it) (nth 2 it)) (<= (nth 1 it) (nth 3 it)))))
        (length)
-       (message "Solution is %d")))
+       (message "Solution 1: %d")))
 
 (defun solve2 ()
   (interactive)
@@ -23,4 +21,4 @@
                      (and (>= (nth 2 it) (nth 0 it)) (<= (nth 2 it) (nth 1 it)))
                      (and (>= (nth 3 it) (nth 0 it)) (<= (nth 3 it) (nth 1 it)))))
        (length)
-       (message "Solution is %d")))
+       (message "Solution 2: %d")))

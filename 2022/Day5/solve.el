@@ -1,5 +1,4 @@
 (defun read-file ()
-  (interactive)
   (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n"))
 
 (defun push-stack (index item)
@@ -43,7 +42,7 @@
             (to (-third-item it)))
         (message "Executing %s" it)
         (--dotimes times (push-stack to (pop-stack from))))))
-  (message "Solution: %s" (string-join (-map #'car elves-stacks))))
+  (message "Solution 1: %s" (string-join (-map #'car elves-stacks))))
 
 (defun push-stack-many (index items)
   (let ((stack (nth index elves-stacks)))
@@ -68,4 +67,4 @@
             (to (-third-item it)))
         (message "Executing %s" it)
         (push-stack-many to (pop-stack-many from times)))))
-  (message "Solution: %s" (string-join (-map #'car elves-stacks))))
+  (message "Solution 2: %s" (string-join (-map #'car elves-stacks))))

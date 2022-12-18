@@ -1,6 +1,5 @@
 const std = @import("std");
 const contents = @embedFile("input.txt");
-
 const Sensor = struct { x: isize, y: isize, i: isize, j: isize };
 
 fn parse(allocator: std.mem.Allocator) !std.ArrayList(Sensor) {

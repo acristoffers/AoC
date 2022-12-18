@@ -1,5 +1,4 @@
 const std = @import("std");
-
 const contents = @embedFile("input.txt");
 const lineSize = std.mem.indexOf(u8, contents, "\n").?;
 
@@ -83,7 +82,7 @@ pub fn main() !void {
             if (v == 1) count += 1;
         }
     }
-    std.log.info("Solution 1: {d}", .{count});
+    std.debug.print("Solution 1: {d}\n", .{count});
 
     var leScore: usize = 0;
     i = 0;
@@ -93,5 +92,5 @@ pub fn main() !void {
             leScore = @max(leScore, score(i, j));
         }
     }
-    std.log.info("Solution 2: {d}", .{leScore});
+    std.debug.print("Solution 2: {d}\n", .{leScore});
 }

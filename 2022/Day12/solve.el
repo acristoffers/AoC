@@ -1,8 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
 (defun read-file ()
-  (interactive)
-  (->> (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n")
-       (--filter (not (string-empty-p it)))
+  (->> (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n" t " ")
        (-map #'string-to-list)))
 
 (defun at (mapa i j)

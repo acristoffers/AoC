@@ -1,6 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
 (defun read-file ()
-  (interactive)
   (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n" t))
 
 (defun parse-sensor (line)

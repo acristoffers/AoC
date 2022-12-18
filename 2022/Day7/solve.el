@@ -1,9 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
-
 (defun read-file ()
-  (interactive)
-  (->> (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n")
-       (--filter (not (string-empty-p it)))))
+  (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n" t " "))
 
 (defun parse (node commands) ;; returns (children remaining-commands)
   (let ((ret nil))
@@ -54,7 +51,7 @@
        (folder-size-recurse)
        (--filter (<= it 100000))
        (-sum)
-       (message "Solution: %d")))
+       (message "Solution 1: %d")))
 
 (defun solve2 ()
   (interactive)
@@ -64,4 +61,4 @@
                     (parse (list))
                     (car)
                     (folder-size-recurse))))
-    (message "Solution: %d" (-min (--filter (>= it (- 30000000 (- 70000000 (-max sizes)))) sizes)))))
+    (message "Solution 2: %d" (-min (--filter (>= it (- 30000000 (- 70000000 (-max sizes)))) sizes)))))

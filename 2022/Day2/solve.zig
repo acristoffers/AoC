@@ -1,16 +1,13 @@
 const std = @import("std");
-
 const contents = @embedFile("input.txt");
 
 pub fn main() !void {
-    var lines = std.mem.tokenize(u8, contents, "\n");
     var points1: usize = 0;
     var points2: usize = 0;
 
+    var lines = std.mem.tokenize(u8, contents, "\n");
     while (lines.next()) |line| {
-        if (line.len == 0) continue;
-
-        var xs = std.mem.split(u8, line, " ");
+        var xs = std.mem.tokenize(u8, line, " ");
         const o = xs.next().?;
         const m = xs.next().?;
 
@@ -36,6 +33,6 @@ pub fn main() !void {
         points2 += @intCast(usize, @mod(p, 3)) + 1;
     }
 
-    std.log.info("Solution 1 is {}", .{points1});
-    std.log.info("Solution 2 is {}", .{points2});
+    std.debug.print("Solution 1 is {}\n", .{points1});
+    std.debug.print("Solution 2 is {}\n", .{points2});
 }

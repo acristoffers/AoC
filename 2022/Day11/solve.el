@@ -1,8 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
 (defun read-file ()
-  (interactive)
-  (->> (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n\n")
-       (--filter (not (string-empty-p it)))))
+  (split-string (buffer-substring-no-properties (point-min) (point-max)) "\n\n" t " "))
 
 (defmacro --mapc (form list)
   (declare (debug (def-form form)))
@@ -16,8 +14,7 @@
 
 (defun parse-monkey (str)
   (append
-   (->> (--filter (not (string-empty-p it)) (split-string str "\n"))
-        (-map #'string-trim)
+   (->> (split-string str "\n" t "[[:blank:]]+")
         (cdr)
         (--map (cond
                 ((string-prefix-p "Starting items" it)

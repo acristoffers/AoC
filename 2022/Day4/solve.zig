@@ -1,17 +1,12 @@
 const std = @import("std");
-
 const contents = @embedFile("input.txt");
 
 pub fn main() !void {
-    var lines = std.mem.split(u8, contents, "\n");
     var count1: usize = 0;
     var count2: usize = 0;
 
+    var lines = std.mem.tokenize(u8, contents, "\n");
     while (lines.next()) |line| {
-        if (line.len == 0) {
-            continue;
-        }
-
         var tokens = std.mem.tokenize(u8, line, ",-");
         const r1s = try std.fmt.parseInt(usize, tokens.next().?, 10);
         const r1e = try std.fmt.parseInt(usize, tokens.next().?, 10);
@@ -29,6 +24,6 @@ pub fn main() !void {
             count2 += 1;
     }
 
-    std.log.info("Solution 1 is {}", .{count1});
-    std.log.info("Solution 2 is {}", .{count2});
+    std.debug.print("Solution 1: {}\n", .{count1});
+    std.debug.print("Solution 2: {}\n", .{count2});
 }

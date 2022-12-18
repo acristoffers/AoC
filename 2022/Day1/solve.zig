@@ -1,30 +1,24 @@
 const std = @import("std");
-
 const contents = @embedFile("input.txt");
 
 pub fn main() !void {
-    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
-    defer _ = gpa.deinit();
-    const allocator = gpa.allocator();
+    var max = [_]usize{ 0, 0, 0, 0 };
 
-    var splits = std.mem.split(u8, contents, "\n\n");
-    var max = std.ArrayList(usize).init(allocator);
-    defer max.deinit();
+    var chunks = std.mem.split(u8, contents, "\n\n");
+    while (chunks.next()) |chunk| {
+        var sum: usize = 0;
 
-    while (splits.next()) |chunk| {
-        var subsplit = std.mem.split(u8, chunk, "\n");
-        var sum: u64 = 0;
-
-        while (subsplit.next()) |num_str| {
-            if (num_str.len == 0) continue;
-            sum += try std.fmt.parseInt(u64, num_str, 10);
+        var lines = std.mem.tokenize(u8, chunk, "\n");
+        while (lines.next()) |line| {
+            sum += try std.fmt.parseInt(usize, line, 10);
         }
 
-        try max.append(sum);
+        max[0] = sum;
+        std.sort.sort(usize, &max, {}, std.sort.asc(usize));
     }
 
-    std.sort.sort(usize, max.items, {}, std.sort.desc(usize));
+    const vec: @Vector(3, usize) = max[1..].*;
 
-    std.log.info("Solution 1 is {}", .{max.items[0]});
-    std.log.info("Solution 2 is {}", .{max.items[0] + max.items[1] + max.items[2]});
+    std.debug.print("Solution 1 is {}\n", .{max[3]});
+    std.debug.print("Solution 2 is {}\n", .{@reduce(.Add, vec)});
 }
