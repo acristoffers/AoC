@@ -5,21 +5,19 @@ const Point = struct {
     x: usize,
     y: usize,
 
-    fn in(self: *const Point, ps: *const std.ArrayList(Point)) bool {
-        for (ps.items) |p| {
-            if (p.x == self.x and p.y == self.y) return true;
-        }
-        return false;
+    fn in(self: *const Point, ps: *const std.AutoHashMap(Point, void)) bool {
+        return ps.contains(self.*);
     }
 };
 
-fn parse(allocator: std.mem.Allocator) !std.ArrayList(Point) {
-    var rocks = std.ArrayList(Point).init(allocator);
+fn parse(allocator: std.mem.Allocator) !std.AutoHashMap(Point, void) {
+    var rocks = std.AutoHashMap(Point, void).init(allocator);
 
     var lines = std.mem.tokenize(u8, contents, "\n");
     while (lines.next()) |line| {
         var first: bool = true;
         var points = std.mem.tokenize(u8, line, " -> ");
+        var head = Point{ .x = 0, .y = 0 };
         while (points.next()) |point| {
             const tail = Point{
                 .x = try std.fmt.parseUnsigned(usize, point[0..3], 10),
@@ -27,48 +25,51 @@ fn parse(allocator: std.mem.Allocator) !std.ArrayList(Point) {
             };
 
             if (first) {
-                try rocks.append(tail);
+                try rocks.put(tail, {});
+                head = tail;
                 first = false;
                 continue;
             }
 
-            const head = rocks.items[rocks.items.len - 1];
             var k: usize = 0;
 
             if (head.x < tail.x) {
                 k = head.x + 1;
                 while (k <= tail.x) : (k += 1) {
-                    try rocks.append(Point{ .x = k, .y = head.y });
+                    try rocks.put(Point{ .x = k, .y = head.y }, {});
                 }
             } else if (head.y < tail.y) {
                 k = head.y + 1;
                 while (k <= tail.y) : (k += 1) {
-                    try rocks.append(Point{ .x = head.x, .y = k });
+                    try rocks.put(Point{ .x = head.x, .y = k }, {});
                 }
             } else if (head.x > tail.x) {
                 k = head.x - 1;
                 while (k >= tail.x) : (k -= 1) {
-                    try rocks.append(Point{ .x = k, .y = head.y });
+                    try rocks.put(Point{ .x = k, .y = head.y }, {});
                 }
             } else if (head.y > tail.y) {
                 k = head.y - 1;
                 while (k >= tail.y) : (k -= 1) {
-                    try rocks.append(Point{ .x = head.x, .y = k });
+                    try rocks.put(Point{ .x = head.x, .y = k }, {});
                 }
             }
+
+            head = tail;
         }
     }
 
     return rocks;
 }
 
-fn draw(rocks: *const std.ArrayList(Point), sand: *const std.ArrayList(Point), floor: bool) void {
+fn draw(rocks: *const std.AutoHashMap(Point, void), sand: *const std.AutoHashMap(Point, void), floor: bool) void {
     var minx: usize = 100000;
     var miny: usize = 100000;
     var maxx: usize = 0;
     var maxy: usize = 0;
 
-    for (rocks.items) |rock| {
+    var keyIterator = rocks.keyIterator();
+    while (keyIterator.next()) |rock| {
         minx = @min(minx, rock.x);
         miny = @min(miny, rock.y);
         maxx = @max(maxx, rock.x);
@@ -77,7 +78,8 @@ fn draw(rocks: *const std.ArrayList(Point), sand: *const std.ArrayList(Point), f
 
     if (floor) maxy += 2;
 
-    for (sand.items) |grain| {
+    keyIterator = sand.keyIterator();
+    for (keyIterator.next()) |grain| {
         minx = @min(minx, grain.x);
         miny = @min(miny, grain.y);
         maxx = @max(maxx, grain.x);
@@ -107,9 +109,10 @@ fn draw(rocks: *const std.ArrayList(Point), sand: *const std.ArrayList(Point), f
     std.debug.print("\n", .{});
 }
 
-fn fall(rocks: *const std.ArrayList(Point), sand: *const std.ArrayList(Point), hasFloor: bool) ?Point {
+fn fall(rocks: *const std.AutoHashMap(Point, void), sand: *const std.AutoHashMap(Point, void), hasFloor: bool) ?Point {
     var floor: usize = 0;
-    for (rocks.items) |rock| floor = @max(floor, rock.y);
+    var keyIterator = rocks.keyIterator();
+    while (keyIterator.next()) |rock| floor = @max(floor, rock.y);
     floor += 2;
 
     var point = Point{ .x = 500, .y = 0 };
@@ -129,12 +132,12 @@ fn fall(rocks: *const std.ArrayList(Point), sand: *const std.ArrayList(Point), h
     }
 }
 
-fn simulate(allocator: std.mem.Allocator, rocks: *const std.ArrayList(Point), hasFloor: bool) !std.ArrayList(Point) {
-    var sand = std.ArrayList(Point).init(allocator);
+fn simulate(allocator: std.mem.Allocator, rocks: *const std.AutoHashMap(Point, void), hasFloor: bool) !std.AutoHashMap(Point, void) {
+    var sand = std.AutoHashMap(Point, void).init(allocator);
 
     var point = fall(rocks, &sand, hasFloor);
     while (point != null) {
-        try sand.append(point.?);
+        try sand.put(point.?, {});
         point = fall(rocks, &sand, hasFloor);
     }
 
@@ -149,17 +152,17 @@ pub fn main() !void {
     var rocks = try parse(allocator);
     defer rocks.deinit();
 
-    const sand = try simulate(allocator, &rocks, false);
+    var sand = try simulate(allocator, &rocks, false);
     defer sand.deinit();
 
-    draw(&rocks, &sand, false);
+    // draw(&rocks, &sand, false);
 
-    std.debug.print("Solution 1: {}\n", .{sand.items.len});
+    std.debug.print("Solution 1: {}\n", .{sand.count()});
 
-    const sand2 = try simulate(allocator, &rocks, true);
+    var sand2 = try simulate(allocator, &rocks, true);
     defer sand2.deinit();
 
-    draw(&rocks, &sand2, true);
+    // draw(&rocks, &sand2, true);
 
-    std.debug.print("Solution 2: {}\n", .{sand2.items.len + 1});
+    std.debug.print("Solution 2: {}\n", .{sand2.count() + 1});
 }
